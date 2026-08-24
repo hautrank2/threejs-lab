@@ -10,7 +10,8 @@ Hai project, một giáo trình:
 | | |
 | --- | --- |
 | **Nguồn sự thật** | `portfolio/content/blog/threejs/**/*.md` — 45 bài + phụ lục |
-| **Bản chạy được** | `threejs-lab/src/lessons/*.ts` — đúng những bài tập trong note đó |
+| **Sườn để làm** | `threejs-lab/src/lessons/*.ts` — `id`, `title`, và `setup()` rỗng |
+| **Lời giải** | `threejs-lab/src/solutions/*.ts` — bản chạy được, để đối chiếu |
 | **Mục lục nối hai bên** | `threejs-lab/src/lessons/registry.ts` |
 
 Lab là một app Next.js (App Router). `registry.ts` vừa là mục lục vừa là nguồn
@@ -19,9 +20,14 @@ trên chính cây `tree`, nên thêm một node `lesson` là có ngay một rout
 không phải khai báo đường dẫn ở đâu nữa. Node `planned` bị lọc khỏi danh sách
 đó, gõ tay URL của nó sẽ ra 404.
 
-Note trả lời *vì sao*, lab trả lời *trông thế nào khi chạy*. Note viết trước,
-lab theo sau. Không bao giờ ngược lại: một bài tập chỉ tồn tại trong lab mà
-không có note thì nằm ở chặng `lab-rieng`, không chen vào 45 bài.
+Note trả lời *vì sao*, lab là chỗ **tự gõ lại** để biết *trông thế nào khi chạy*.
+Note viết trước, lab theo sau. Không bao giờ ngược lại: một bài tập chỉ tồn tại
+trong lab mà không có note thì nằm ở chặng `lab-rieng`, không chen vào 45 bài.
+
+**Lab là phòng tập, không phải phòng trưng bày.** `src/lessons/*.ts` cố ý để
+trống — mở một bài lên là canvas trắng, và đó là đúng. Bản chạy được nằm ở
+`src/solutions/*.ts`, cùng tên file, chỉ mở ra khi đã thử. Đừng "sửa" chuyện
+canvas trắng bằng cách chép lời giải ngược về `src/lessons/`.
 
 ---
 
@@ -45,7 +51,9 @@ Bốn `kind` của một node:
 | `note` | Note đã viết nhưng không có gì để chạy (Bài 1, 2, 3, 5) | Bấm được, chỉ có chữ |
 | `planned` | Chưa viết note, chưa dựng lab | Mờ, không bấm được |
 
-Con số ở sidebar (hiện là `19/50`) chính là số node `lesson` trên tổng số node lá.
+Con số ở sidebar (hiện là `19/50`) chính là số node `lesson` trên tổng số node lá
+— tức số bài **đã có sườn để làm**, không phải số bài bạn đã làm xong. Không có
+chỗ nào lưu tiến độ của người học.
 
 ---
 
@@ -53,8 +61,10 @@ Con số ở sidebar (hiện là `19/50`) chính là số node `lesson` trên t�
 
 Sau khi note bên blog đã viết xong:
 
-1. **Tạo module bài học** — `src/lessons/<số>-<slug>.ts`, số là số bài trong
-   giáo trình (`19-lights.ts`). Bài phụ lục không có số: `phu-luc-dispose.ts`.
+1. **Tạo sườn** — `src/lessons/<số>-<slug>.ts`, số là số bài trong giáo trình
+   (`19-lights.ts`). Bài phụ lục không có số: `phu-luc-dispose.ts`. Sườn chỉ có
+   `id`, `title`, `lab`, và một `setup()` rỗng kèm `// TODO`. **Không** dán code
+   trong mục "Bài tập" của note vào đây — đó là việc của người học.
 
    ```ts
    import * as THREE from "three";
@@ -66,8 +76,8 @@ Sau khi note bên blog đã viết xong:
          id: "ten-ngan",
          title: "Tiêu đề tab",           // hiện khi bài có nhiều hơn một bài tập
          lab: { helpers: false },        // tuỳ chọn của createLab
-         setup: (lab) => {
-           // dán code trong mục "Bài tập" của note vào đây
+         setup: () => {
+           // TODO — người học tự viết, theo mục "Bài tập" của note
          },
        },
      ],
@@ -81,7 +91,12 @@ Sau khi note bên blog đã viết xong:
 3. **`breaks`** chép từ mục **Thử phá** của note. Đây là phần đáng chép nhất —
    nó là lý do cái lab tồn tại.
 
-4. Chạy `npm run typecheck`, mở `/<chặng>/<slug>`, xoay thử, xong.
+3b. **Lời giải** — bản chạy được, đặt ở `src/solutions/<cùng tên file>.ts`. Không
+   file nào import nó; nó tồn tại chỉ để đối chiếu, và để `tsc` canh cho nó
+   không mục theo thời gian.
+
+4. Chạy `npm run typecheck`, mở `/<chặng>/<slug>` — thấy canvas trắng và tab
+   demo đúng tên là sườn đã đúng.
 
 Một note có nhiều "Bài tập 1 / Bài tập 2" thì thành nhiều phần tử trong `demos`,
 không tách thành hai node.
