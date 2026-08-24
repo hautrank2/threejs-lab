@@ -13,6 +13,12 @@ Hai project, một giáo trình:
 | **Bản chạy được** | `threejs-lab/src/lessons/*.ts` — đúng những bài tập trong note đó |
 | **Mục lục nối hai bên** | `threejs-lab/src/lessons/registry.ts` |
 
+Lab là một app Next.js (App Router). `registry.ts` vừa là mục lục vừa là nguồn
+của route: `src/app/[section]/[lesson]/page.tsx` gọi `generateStaticParams()`
+trên chính cây `tree`, nên thêm một node `lesson` là có ngay một route tĩnh —
+không phải khai báo đường dẫn ở đâu nữa. Node `planned` bị lọc khỏi danh sách
+đó, gõ tay URL của nó sẽ ra 404.
+
 Note trả lời *vì sao*, lab trả lời *trông thế nào khi chạy*. Note viết trước,
 lab theo sau. Không bao giờ ngược lại: một bài tập chỉ tồn tại trong lab mà
 không có note thì nằm ở chặng `lab-rieng`, không chen vào 45 bài.
@@ -23,7 +29,7 @@ không có note thì nằm ở chặng `lab-rieng`, không chen vào 45 bài.
 
 1. **Slug.** Slug trong `registry.ts` trùng tên file `.md` bên blog.
    `content/blog/threejs/anh-sang/lights.md` ↔ `{ slug: "lights" }` trong chặng
-   `anh-sang` ↔ route `#/anh-sang/lights`.
+   `anh-sang` ↔ route `/anh-sang/lights`.
 2. **Thứ tự.** Mảng `tree` trong `registry.ts` chép đúng mảng `order:` của từng
    `index.md`. Đổi thứ tự bên blog thì đổi luôn bên này, cùng một lần sửa.
 3. **Backlog.** Mục nào có trong `order:` mà chưa có file `.md` thì bên blog
@@ -75,7 +81,7 @@ Sau khi note bên blog đã viết xong:
 3. **`breaks`** chép từ mục **Thử phá** của note. Đây là phần đáng chép nhất —
    nó là lý do cái lab tồn tại.
 
-4. Chạy `npm run typecheck`, mở bài đó, xoay thử, xong.
+4. Chạy `npm run typecheck`, mở `/<chặng>/<slug>`, xoay thử, xong.
 
 Một note có nhiều "Bài tập 1 / Bài tập 2" thì thành nhiều phần tử trong `demos`,
 không tách thành hai node.
@@ -100,9 +106,15 @@ này, không sửa gì thêm:
 `lab.dispose()` chạy đúng thứ tự trong note phụ lục: dừng `setAnimationLoop`
 trước, rồi mới tới controls, gui, `disposeObject(scene)`, renderer.
 
-**Giữ `StrictMode`.** React mount → unmount → mount lại ở dev là máy dò rò rỉ
-miễn phí: `dispose()` sai thì thấy ngay hai canvas hoặc scene chạy nhanh gấp
-đôi. Đừng tắt nó để "sửa" lỗi đó.
+**Giữ Strict Mode.** Next bật sẵn (`reactStrictMode` mặc định `true`), nên ở dev
+React mount → unmount → mount lại — máy dò rò rỉ miễn phí: `dispose()` sai thì
+thấy ngay hai canvas hoặc scene chạy nhanh gấp đôi. Đừng đặt
+`reactStrictMode: false` để "sửa" lỗi đó.
+
+Một chỗ nữa của Next đáng nhớ: `registry.ts` chứa hàm `load()`, mà hàm không đi
+qua được ranh giới server → client. Vì vậy `page.tsx` chỉ truyền chuỗi `path`
+xuống, còn `LessonStage` (`"use client"`) tự tra lại node. Đừng truyền cả node
+xuống làm prop.
 
 ---
 
@@ -140,17 +152,21 @@ threejs-lab/src/lessons/registry.ts        # tree
 ```
 
 Đổi tên file `.md` thì đổi cả `slug`, `blogPath`, và tên file trong
-`src/lessons/`. Route ở hash sẽ đổi theo — không sao, lab không có link ngoài.
+`src/lessons/`. Route sẽ đổi theo — không sao, lab không có link ngoài. Route cũ
+không được giữ lại: không có redirect nào trong `next.config.ts`.
 
 ---
 
 ## Kiểm tra trước khi coi là xong
 
 ```bash
-npm run typecheck        # tsc -b, strict, không any
-npm run build            # tsc -b && vite build
+npm run typecheck        # tsc --noEmit, strict, không any
+npm run build            # next build — dựng tĩnh toàn bộ node mở được
 npm run dev              # rồi bấm hết một lượt các bài trong chặng vừa sửa
 ```
+
+`next build` in ra danh sách route. Số route `●` phải bằng số node mở được
+(`lesson` + `note`) — lệch là quên sửa `registry.ts`.
 
 Ba thứ nhìn bằng mắt sau khi đổi bài vài lần:
 

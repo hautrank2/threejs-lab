@@ -1,3 +1,8 @@
+"use client";
+
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowLeft, ArrowRight, Boxes, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
@@ -7,51 +12,34 @@ import {
 } from "~/components/ui/collapsible";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { LessonSidebar } from "~/components/lesson/sidebar";
-import { LessonStage } from "~/components/lesson/stage";
-import { navigate, useHashRoute } from "~/hooks/useHashRoute";
-import { findLesson, runnableOrder, totalProgress } from "~/lessons/registry";
+import { runnableOrder, totalProgress } from "~/lessons/registry";
 
-const Home = () => {
-  const progress = totalProgress();
-  const first = runnableOrder()[0];
-
-  return (
-    <div className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className="text-2xl font-semibold tracking-tight">Three.js lab</h1>
-      <p className="mt-3 text-sm leading-relaxed text-foreground/60">
-        Mỗi bài trong{" "}
-        <span className="text-foreground/80">content/blog/threejs</span> kết thúc
-        bằng một bài tập chạy được. Chỗ này là nơi chúng chạy thật: chọn bài ở cột
-        trái, vặn thanh trượt bên phải, rồi làm theo mục{" "}
-        <span className="text-foreground/80">Thử phá</span> ở dưới.
-      </p>
-
-      <ul className="mt-6 space-y-2 text-sm text-foreground/60">
-        <li>
-          • <span className="text-foreground/80">{progress.done}</span> bài đã dựng
-          lab trên tổng số {progress.total} bài của giáo trình.
-        </li>
-        <li>• Bài mờ trong mục lục là bài chưa viết note và chưa dựng lab.</li>
-        <li>
-          • Đổi bài là huỷ trọn gói scene cũ — nhìn{" "}
-          <span className="text-foreground/80">renderer.info.memory</span> để tự
-          kiểm tra chuyện đó.
-        </li>
-      </ul>
-
-      {first && (
-        <Button className="mt-8" onClick={() => navigate(first.path)}>
-          Bắt đầu — {first.node.title}
-          <ArrowRight />
-        </Button>
-      )}
-    </div>
-  );
+type StepButtonProps = {
+  step?: { path: string };
+  children: ReactNode;
 };
 
-export const App = () => {
-  const route = useHashRoute();
-  const found = findLesson(route);
+/** Trước / Sau: có bài thì là link thật, hết bài thì là nút xám. */
+const StepButton = ({ step, children }: StepButtonProps) =>
+  step ? (
+    <Button size="sm" variant="ghost" asChild>
+      <Link href={`/${step.path}`}>{children}</Link>
+    </Button>
+  ) : (
+    <Button size="sm" variant="ghost" disabled>
+      {children}
+    </Button>
+  );
+
+/**
+ * Khung chung của mọi trang: thanh trên, mục lục bên trái, nội dung ở giữa.
+ * Nằm trong `layout.tsx` nên đổi bài không dựng lại sidebar — chỉ phần
+ * `children` bị thay, đúng cái ta cần: một `LessonStage` mới, một lab mới.
+ */
+export const AppShell = ({ children }: { children: ReactNode }) => {
+  const pathname = usePathname();
+  // `/anh-sang/lights` -> `anh-sang/lights`, khớp với khoá của registry.
+  const route = pathname.replace(/^\//, "");
 
   const progress = totalProgress();
   const order = runnableOrder();
@@ -63,32 +51,18 @@ export const App = () => {
     <div className="flex h-dvh flex-col bg-background text-foreground">
       <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border/60 px-4">
         <Boxes size={16} className="text-primary" />
-        <button
-          type="button"
-          onClick={() => navigate("")}
-          className="text-sm font-semibold tracking-tight"
-        >
+        <Link href="/" className="text-sm font-semibold tracking-tight">
           threejs-lab
-        </button>
+        </Link>
         <span className="ml-auto flex items-center gap-1">
-          <Button
-            size="sm"
-            variant="ghost"
-            disabled={!prev}
-            onClick={() => prev && navigate(prev.path)}
-          >
+          <StepButton step={prev}>
             <ArrowLeft />
             Trước
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            disabled={!next}
-            onClick={() => next && navigate(next.path)}
-          >
+          </StepButton>
+          <StepButton step={next}>
             Sau
             <ArrowRight />
-          </Button>
+          </StepButton>
         </span>
       </header>
 
@@ -122,11 +96,7 @@ export const App = () => {
             </CollapsibleContent>
           </Collapsible>
 
-          {found ? (
-            <LessonStage key={`stage:${route}`} lesson={found.lesson} path={route} />
-          ) : (
-            <Home />
-          )}
+          {children}
         </main>
       </div>
     </div>

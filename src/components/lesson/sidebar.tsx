@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChevronRight, CirclePlay, FileText, Lock } from "lucide-react";
 import {
   Collapsible,
@@ -7,7 +8,6 @@ import {
 import { cn } from "~/lib/utils";
 import { progressOf, totalProgress, tree } from "~/lessons/registry";
 import type { LessonNodeType } from "~/lessons/types";
-import { navigate } from "~/hooks/useHashRoute";
 import { LabProgress } from "./progress";
 
 const ordinal = (index: number) => String(index + 1).padStart(2, "0");
@@ -28,26 +28,40 @@ const LessonRow = ({ node, path, active }: LessonRowProps) => {
   const Icon = ICON[node.kind as keyof typeof ICON] ?? FileText;
   const openable = node.kind !== "planned";
 
+  const row = cn(
+    "flex w-full items-center gap-2 border-l-2 py-1.5 pl-6 pr-2 text-left text-[0.8rem] transition-colors",
+    active
+      ? "border-primary bg-primary/10 font-medium text-primary"
+      : "border-transparent text-foreground/60",
+    openable
+      ? "hover:border-primary/40 hover:text-foreground"
+      : "cursor-not-allowed text-foreground/25",
+  );
+
+  const label = (
+    <>
+      <Icon size={12} className="shrink-0 opacity-70" />
+      <span className="min-w-0 flex-1 truncate">{node.title}</span>
+    </>
+  );
+
   return (
     <li>
-      <button
-        type="button"
-        disabled={!openable}
-        aria-current={active ? "page" : undefined}
-        onClick={() => navigate(path)}
-        className={cn(
-          "flex w-full items-center gap-2 border-l-2 py-1.5 pl-6 pr-2 text-left text-[0.8rem] transition-colors",
-          active
-            ? "border-primary bg-primary/10 font-medium text-primary"
-            : "border-transparent text-foreground/60",
-          openable
-            ? "hover:border-primary/40 hover:text-foreground"
-            : "cursor-not-allowed text-foreground/25",
-        )}
-      >
-        <Icon size={12} className="shrink-0 opacity-70" />
-        <span className="min-w-0 flex-1 truncate">{node.title}</span>
-      </button>
+      {openable ? (
+        // Bài `planned` không có route -> để nguyên là <span>, không phải link
+        // hỏng. Prefetch mặc định của Next lo phần chunk của bài kế tiếp.
+        <Link
+          href={`/${path}`}
+          aria-current={active ? "page" : undefined}
+          className={row}
+        >
+          {label}
+        </Link>
+      ) : (
+        <span aria-disabled className={row}>
+          {label}
+        </span>
+      )}
     </li>
   );
 };
@@ -68,13 +82,12 @@ export const LessonSidebar = ({ current }: LessonSidebarProps) => {
 
   return (
     <nav aria-label="Mục lục bài học" className="p-4">
-      <button
-        type="button"
-        onClick={() => navigate("")}
+      <Link
+        href="/"
         className="block text-left text-sm font-semibold tracking-tight transition-colors hover:text-primary"
       >
         Three.js — 45 bài
-      </button>
+      </Link>
 
       <LabProgress done={total.done} total={total.total} className="mt-3" />
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink, Hammer } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
@@ -5,8 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { createLab } from "~/lab";
 import type { DemoType } from "~/lab";
-import { BLOG_BASE } from "~/lessons/registry";
-import type { LessonNodeType } from "~/lessons/types";
+import { BLOG_BASE, findLesson } from "~/lessons/registry";
 import { cn } from "~/lib/utils";
 
 type DemoCanvasProps = {
@@ -51,11 +52,17 @@ const DemoCanvas = ({ demo }: DemoCanvasProps) => {
 };
 
 export type LessonStageProps = {
-  lesson: LessonNodeType;
+  /** `chặng/slug` — cùng khoá mà route dùng. */
   path: string;
 };
 
-export const LessonStage = ({ lesson, path }: LessonStageProps) => {
+/**
+ * Nội dung một bài. Nhận `path` chứ không nhận cả node: registry chứa hàm
+ * `load()`, mà hàm thì không đi qua được ranh giới server -> client. Tra lại
+ * node ngay bên client là xong, cùng một object trong module.
+ */
+export const LessonStage = ({ path }: LessonStageProps) => {
+  const lesson = findLesson(path)?.lesson ?? null;
   const [demos, setDemos] = useState<DemoType[] | null>(null);
   const [active, setActive] = useState(0);
 
@@ -63,10 +70,11 @@ export const LessonStage = ({ lesson, path }: LessonStageProps) => {
     setDemos(null);
     setActive(0);
 
-    if (!lesson.load) return;
+    const load = lesson?.load;
+    if (!load) return;
 
     let cancelled = false;
-    lesson.load().then((mod) => {
+    load().then((mod) => {
       if (!cancelled) setDemos(mod.lesson.demos);
     });
 
@@ -74,6 +82,8 @@ export const LessonStage = ({ lesson, path }: LessonStageProps) => {
       cancelled = true;
     };
   }, [lesson]);
+
+  if (!lesson) return null;
 
   const demo = demos?.[active];
 
