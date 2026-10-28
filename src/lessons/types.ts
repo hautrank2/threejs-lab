@@ -20,6 +20,11 @@ export type LessonNodeType = {
   blogPath?: string;
   /** Mục "Thử phá" của note — thứ đáng nghịch sau khi bài chạy được. */
   breaks?: string[];
+  /**
+   * Chỉ có ở `kind: "note"` — bài không dựng lab được (lý thuyết, cài đặt).
+   * Mỗi phần tử là một ý/gạch đầu dòng, thay cho khung lab trống.
+   */
+  summary?: string[];
   /** Chỉ có ở `kind: "lesson"`. Tải lười, không nằm trong bundle đầu tiên. */
   load?: () => Promise<{ lesson: LessonModuleType }>;
   children?: LessonNodeType[];

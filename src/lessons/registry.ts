@@ -23,6 +23,13 @@ export const tree: LessonNodeType[] = [
         description:
           "Bốn bước cho mỗi bài, và ba cái bẫy làm người ta bỏ dở giữa chừng.",
         blogPath: "/chuan-bi/hoc-the-nao",
+        summary: [
+          "Bốn bước mỗi bài: xem một lượt không gõ gì, gõ lại từ đầu không tua video, \"phá\" nó bằng mục Thử phá, rồi commit với message là tên bài.",
+          "Bẫy 1 — xem liền nhiều bài rồi mới gõ: tới lúc gõ lại quên mất bài trước nói gì.",
+          "Bẫy 2 — copy code mẫu thay vì tự viết: nhanh hết khoá nhưng không viết nổi một scene từ số 0.",
+          "Bẫy 3 — bỏ qua Bài 6–7 vì tưởng là phụ: Stats và GUI là hai công cụ dùng lại ở 37 bài sau.",
+          "Thời gian thực ≈ 3 lần thời lượng video, vì phần lớn nằm ở gõ lại và sửa lỗi chính tả trong code.",
+        ],
       },
       {
         kind: "note",
@@ -30,6 +37,12 @@ export const tree: LessonNodeType[] = [
         title: "Bài 2 — Môi trường phát triển",
         description: "Node >= 20.19, VS Code, và hai extension đáng cài.",
         blogPath: "/chuan-bi/moi-truong",
+        summary: [
+          "Kiểm `node -v` trước khi bắt đầu: cần >= 20.19, vì Vite 6+ đã bỏ hỗ trợ Node 16 và 18.",
+          "VS Code chỉ cần hai extension: ESLint, và một extension tô cú pháp GLSL cho lúc viết shader — không cần extension riêng cho Three.js vì @types/three đã lo gợi ý code.",
+          "Bật `editor.formatOnSave` và trỏ `typescript.tsdk` vào bản TypeScript của project, để tránh lệch phiên bản với `tsc` khi build.",
+          "DevTools: mở tab Console (lỗi shader chỉ hiện ở đây, không hiện trên màn hình) và tick Disable cache ở tab Network (tránh bug \"sửa file .glb rồi mà không thấy đổi\").",
+        ],
       },
       {
         kind: "note",
@@ -37,6 +50,12 @@ export const tree: LessonNodeType[] = [
         title: "Bài 3 — Tạo project",
         description: "Vite + TypeScript trong một lệnh, và ba file cần dọn sạch.",
         blogPath: "/chuan-bi/boilerplate",
+        summary: [
+          "`npm create vite@latest ... --template vanilla-ts` dựng xong project trong một lệnh.",
+          "Xoá file mẫu của template (counter.ts, logo svg, nội dung HTML thừa) trước khi bắt đầu — để không chen vào scene ở bài sau.",
+          "Reset CSS mặc định: `margin: 0` và `canvas { display: block }` — nguồn gốc của thanh cuộn thừa khi canvas full màn hình ở scene đầu tiên.",
+          "Cấu trúc thư mục dùng cho cả khoá: `public/` chứa asset tĩnh (model, texture), `src/lab.ts` là khung dùng lại (Bài 8), mỗi bài xong thì commit riêng một lần.",
+        ],
       },
       {
         kind: "lesson",
@@ -56,6 +75,12 @@ export const tree: LessonNodeType[] = [
         title: "Bài 5 — Import module và bundle size",
         description: "Namespace hay named import? Đo bundle thật rồi mới kết luận.",
         blogPath: "/chuan-bi/import-module",
+        summary: [
+          "Ba kiểu import: namespace (`import * as THREE`), named (`import { Scene }`), và addons — `OrbitControls`, `GLTFLoader`... không nằm trong core, phải lấy từ `three/addons/*` kèm đuôi `.js` bắt buộc.",
+          "Niềm tin \"namespace import làm bundle nặng hơn\" là sai: build Vite ra bundle giống hệt nhau (kể cả hash tên file), vì Rollup tree-shake tốt cả hai kiểu.",
+          "Chọn kiểu import nào là chuyện đọc code cho dễ, không phải chuyện hiệu năng.",
+          "Thứ thật sự làm nặng bundle là `WebGLRenderer` và `MeshStandardMaterial` (kéo theo toàn bộ shader + PBR) — một scene Three.js khó xuống dưới ~130 kB gzip.",
+        ],
       },
       {
         kind: "lesson",

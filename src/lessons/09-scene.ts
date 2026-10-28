@@ -1,4 +1,5 @@
 import type { LessonModuleType } from "~/lab";
+import { sceneFog } from "./mine/09-scene";
 
 /**
  * Bài 9 — Scene
@@ -17,9 +18,7 @@ export const lesson: LessonModuleType = {
       id: "fog",
       title: "Một hàng khối chạy về phía xa",
       lab: { helpers: false },
-      setup: () => {
-        // TODO — Một hàng khối chạy về phía xa
-      },
+      setup: sceneFog,
     },
   ],
 };

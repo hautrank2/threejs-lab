@@ -1,0 +1,2 @@
+import{G as e,R as t,o as n}from"./index-D1U96MTG.js";var r={demos:[{id:`cube`,title:`Khối hộp đầu tiên`,setup:r=>{let i=new t(new n(1,1,1),new e({color:3718648,roughness:.35}));i.position.y=.5,r.scene.add(i);let a={speed:.6};r.gui.add(a,`speed`,0,4,.01).name(`tốc độ (radian/giây)`),r.onTick(e=>{i.rotation.y+=a.speed*e}),r.readout(`Bài học chỉ có mấy dòng: tạo mesh, add, onTick.
+Renderer, camera, resize, vòng lặp — createLab() gánh hết.`)}}]};export{r as lesson};

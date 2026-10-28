@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ExternalLink, Hammer } from "lucide-react";
+import { BookOpen, ExternalLink, Hammer } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
@@ -142,14 +142,25 @@ export const LessonStage = ({ path }: LessonStageProps) => {
               Đang tải bài tập…
             </div>
           )
-        ) : (
-          <div className="lab-stage grid place-items-center px-6 text-center">
-            <p className="max-w-md text-sm text-foreground/50">
-              Bài này không dựng được gì lên màn hình — nó nói về môi trường, cách
-              import, hoặc cách học. Đọc note bên blog là đủ.
-            </p>
-          </div>
-        )}
+        ) : lesson.summary?.length ? (
+          <section className="px-6 py-6">
+            <h2 className="flex items-center gap-2 text-sm font-medium">
+              <BookOpen size={14} className="text-foreground/40" />
+              Tóm tắt
+            </h2>
+            <ul className="mt-3 space-y-2.5">
+              {lesson.summary.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-2.5 text-sm leading-relaxed text-foreground/70"
+                >
+                  <span className="mt-2 size-1 shrink-0 rounded-full bg-foreground/25" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {lesson.breaks?.length ? (
           <section className="px-6 py-6">

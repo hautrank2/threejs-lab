@@ -2,7 +2,7 @@
   "name": "threejs-lab",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 5173",
+    "dev": "next dev --turbopack --port 3005",
     "build": "next build",
     "start": "next start --port 5173",
     "typecheck": "tsc --noEmit"
