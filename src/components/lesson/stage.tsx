@@ -12,13 +12,14 @@ import { cn } from "~/lib/utils";
 
 type DemoCanvasProps = {
   demo: DemoType;
+  className?: string;
 };
 
 /**
  * Một bài tập, một `createLab()`. Đổi bài là huỷ trọn gói rồi dựng lại —
  * `lab.dispose()` chạy trong hàm dọn của effect, đúng như note phụ lục.
  */
-const DemoCanvas = ({ demo }: DemoCanvasProps) => {
+export const DemoCanvas = ({ demo, className }: DemoCanvasProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const DemoCanvas = ({ demo }: DemoCanvasProps) => {
     };
   }, [demo]);
 
-  return <div ref={ref} className="lab-stage" />;
+  return <div ref={ref} className={cn("lab-stage", className)} />;
 };
 
 export type LessonStageProps = {

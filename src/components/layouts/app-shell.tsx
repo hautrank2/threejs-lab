@@ -38,6 +38,12 @@ const StepButton = ({ step, children }: StepButtonProps) =>
  */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
+
+  // Bản nhúng trong iframe của blog: chỉ canvas, không thanh trên, không mục lục.
+  if (pathname.startsWith("/embed/")) {
+    return <div className="h-dvh bg-background text-foreground">{children}</div>;
+  }
+
   // `/anh-sang/lights` -> `anh-sang/lights`, khớp với khoá của registry.
   const route = pathname.replace(/^\//, "");
 

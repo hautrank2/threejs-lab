@@ -141,6 +141,12 @@
     border-bottom: 1px solid var(--border);
 }
 
+/* Trong iframe của blog: khung chiếm trọn iframe, chiều cao do blog quyết. */
+.lab-stage.lab-stage-embed {
+    height: 100dvh;
+    border-bottom: 0;
+}
+
 .lab-canvas {
     display: block;
     width: 100%;
