@@ -189,7 +189,7 @@ export const tree: LessonNodeType[] = [
     kind: "section",
     slug: "object3d",
     title: "Chặng 3 — Object3D (Bài 13–14)",
-    description: "Lớp cha của mọi thứ trong scene, và phép nhân ma trận theo cây.",
+    description: "Base class của mọi thứ trong scene, và phép nhân ma trận theo cây.",
     blogPath: "/object3d",
     children: [
       {
