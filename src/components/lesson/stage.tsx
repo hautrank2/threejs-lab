@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BookOpen, ExternalLink, Hammer } from "lucide-react";
+import { BookOpen, ExternalLink, Hammer, RotateCcw } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
@@ -65,10 +65,13 @@ export const LessonStage = ({ path }: LessonStageProps) => {
   const lesson = findLesson(path)?.lesson ?? null;
   const [demos, setDemos] = useState<DemoType[] | null>(null);
   const [active, setActive] = useState(0);
+  // Bấm Reset -> tăng runId -> DemoCanvas đổi key, lab cũ dispose, setup chạy lại.
+  const [runId, setRunId] = useState(0);
 
   useEffect(() => {
     setDemos(null);
     setActive(0);
+    setRunId(0);
 
     const load = lesson?.load;
     if (!load) return;
@@ -87,22 +90,51 @@ export const LessonStage = ({ path }: LessonStageProps) => {
 
   const demo = demos?.[active];
 
+  // Nạp lại module bài để lấy bản code mới nhất (sau khi sửa file), rồi dựng
+  // lại lab. Giữ nguyên demo đang chọn.
+  const reset = () => {
+    const load = lesson.load;
+    if (!load) return;
+    load().then((mod) => {
+      setDemos(mod.lesson.demos);
+      setRunId((n) => n + 1);
+    });
+  };
+
   return (
     <article className="flex min-h-0 flex-1 flex-col">
       <header className="border-b border-border/60 px-6 py-5">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-lg font-semibold tracking-tight">{lesson.title}</h1>
+          <h1 className="text-lg font-semibold tracking-tight">
+            {lesson.title}
+          </h1>
           {lesson.kind === "note" && (
             <Badge variant="outline" className="rounded-full text-[0.7rem]">
               chỉ có lý thuyết
             </Badge>
+          )}
+          {lesson.load && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={reset}
+              disabled={!demo}
+              className="ml-auto h-7 gap-1.5 text-xs"
+              title="Huỷ lab hiện tại và chạy lại setup()"
+            >
+              <RotateCcw size={12} />
+              Reset
+            </Button>
           )}
           {lesson.blogPath && (
             <a
               href={`${BLOG_BASE}${lesson.blogPath}`}
               target="_blank"
               rel="noreferrer"
-              className="ml-auto inline-flex items-center gap-1.5 text-xs text-foreground/50 transition-colors hover:text-primary"
+              className={cn(
+                !lesson.load && "ml-auto",
+                "inline-flex items-center gap-1.5 text-xs text-foreground/50 transition-colors hover:text-primary",
+              )}
             >
               Mở note bên blog
               <ExternalLink size={12} />
@@ -136,7 +168,7 @@ export const LessonStage = ({ path }: LessonStageProps) => {
       <div className="min-h-0 flex-1 overflow-y-auto">
         {lesson.load ? (
           demo ? (
-            <DemoCanvas key={`${path}:${demo.id}`} demo={demo} />
+            <DemoCanvas key={`${path}:${demo.id}:${runId}`} demo={demo} />
           ) : (
             <div className="lab-stage grid place-items-center text-sm text-foreground/40">
               Đang tải bài tập…
