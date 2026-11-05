@@ -166,7 +166,7 @@ export const tree: LessonNodeType[] = [
         breaks: [
           "Kéo `devicePixelRatio` từ 0.25 lên 3 — pixel vẽ tăng theo bình phương, FPS tụt theo.",
           "Đổi tone mapping sang `None` — vùng sáng trên kim loại cháy thành mảng trắng bệt.",
-          "Đổi `TorusKnotGeometry(1, 0.35, 200, 32)` thành `(1, 0.35, 1000, 64)` — draw call vẫn 1, tam giác nhân lên nhiều lần.",
+          "Đổi `TorusKnotGeometry(1, 0.35, 200, 32)` thành `(1, 0.35, 1000, 64)` — draw call vẫn 1, triangles nhân lên nhiều lần.",
         ],
         load: () => import("./11-renderer"),
       },
@@ -236,9 +236,9 @@ export const tree: LessonNodeType[] = [
         description: "Hình dạng chỉ là mảng số. Segments là chỗ đốt hiệu năng dễ nhất.",
         blogPath: "/geometry-material/geometries",
         breaks: [
-          "Bật wireframe — Plane chỉ có 2 tam giác, TorusKnot có hàng nghìn.",
+          "Bật wireframe — Plane chỉ có 2 triangles, TorusKnot có hàng nghìn.",
           "Đổi `SphereGeometry(0.8, 32, 16)` thành `(0.8, 128, 64)` — tăng ~16 lần, mắt gần như không phân biệt được.",
-          "Tắt doubleSide ở tam giác tự dựng — biến mất nửa vòng quay.",
+          "Tắt doubleSide ở triangle tự dựng — biến mất nửa vòng quay.",
           "Tắt `position.needsUpdate` ở bài sóng — mặt phẳng đứng im dù mảng vẫn đang đổi.",
           "Tắt `computeVertexNormals()` — sóng vẫn nhấp nhô nhưng sáng phẳng lì.",
         ],

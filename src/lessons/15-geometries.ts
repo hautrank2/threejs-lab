@@ -23,18 +23,18 @@ export const lesson: LessonModuleType = {
     },
     {
       id: "tam-giac",
-      title: "Tự dựng một tam giác",
+      title: "Tự dựng một triangle",
       lab: { helpers: false },
       setup: () => {
-        // TODO — Tự dựng một tam giác
+        // TODO — Tự dựng một triangle
       },
     },
     {
       id: "song",
-      title: "Sửa từng đỉnh lúc chạy",
+      title: "Sửa từng vertex lúc chạy",
       lab: { helpers: false },
       setup: () => {
-        // TODO — Sửa từng đỉnh lúc chạy
+        // TODO — Sửa từng vertex lúc chạy
       },
     },
   ],

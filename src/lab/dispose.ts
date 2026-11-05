@@ -3,7 +3,7 @@ import * as THREE from "three";
 /**
  * Trả tài nguyên GPU của cả cây `root` về cho trình duyệt.
  *
- * `scene.remove()` chỉ gỡ khỏi cây scene — buffer đỉnh, texture và shader vẫn
+ * `scene.remove()` chỉ gỡ khỏi cây scene — vertex buffer, texture và shader vẫn
  * nằm trên GPU cho tới khi được `dispose()`. Xem note phụ lục
  * `dispose-va-memory-leak` bên blog.
  *
