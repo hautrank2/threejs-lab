@@ -18,8 +18,11 @@ export type LessonNodeType = {
   description?: string;
   /** Đường dẫn note tương ứng bên blog, tính từ `/blog/threejs`. */
   blogPath?: string;
-  /** Mục "Thử phá" của note — thứ đáng nghịch sau khi bài chạy được. */
-  breaks?: string[];
+  /**
+   * Mục "Thử phá" của note — thứ đáng nghịch sau khi bài chạy được.
+   * Bài có nhiều demo thì tách theo `demo.id`, lab chỉ hiện phần của demo đang mở.
+   */
+  breaks?: string[] | Record<string, string[]>;
   /**
    * Chỉ có ở `kind: "note"` — bài không dựng lab được (lý thuyết, cài đặt).
    * Mỗi phần tử là một ý/gạch đầu dòng, thay cho khung lab trống.

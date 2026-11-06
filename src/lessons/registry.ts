@@ -212,12 +212,18 @@ export const tree: LessonNodeType[] = [
         title: "Bài 14 — Object3D hierarchy",
         description: "Cây scene chính là phép nhân ma trận dây chuyền.",
         blogPath: "/object3d/hierarchy",
-        breaks: [
-          "`earthOrbit.scale.set(2, 1, 1)` — quỹ đạo méo thành elip VÀ trái đất bị kéo xiên.",
-          "Đổi `moonOrbit.position.x` thành 3 — mặt trăng bám vào node quỹ đạo, không bám vào trái đất.",
-          "Đổi `earthOrbit.rotation.y` thành `.z` — cả hệ lật đứng dậy.",
-          "`arrow.setDirection(world.normalize())` — mũi tên biến mất, vì normalize() sửa tại chỗ.",
-        ],
+        breaks: {
+          solar: [
+            "`earthOrbit.scale.set(2, 1, 1)` — quỹ đạo méo thành elip VÀ trái đất bị kéo xiên.",
+            "Đổi `moonOrbit.position.x` thành 3 — mặt trăng bám vào node quỹ đạo, không bám vào trái đất.",
+            "Thêm `earth.rotation.y += 2 * delta` — trái đất tự quay, độc lập với vòng quanh mặt trời.",
+            "Đổi `earthOrbit.rotation.y` thành `.z` — cả hệ lật đứng dậy.",
+          ],
+          "local-world": [
+            "`arrow.setDirection(world.normalize())` — mũi tên kẹt ở dài 1, không chạm quả bóng nữa, vì normalize() sửa tại chỗ.",
+            "Thay `group.rotation.y += …` bằng `group.position.x += delta` — mũi tên vẫn bám đúng quả bóng.",
+          ],
+        },
         load: () => import("./14-hierarchy"),
       },
     ],
@@ -235,13 +241,23 @@ export const tree: LessonNodeType[] = [
         title: "Bài 15 — Geometries",
         description: "Hình dạng chỉ là mảng số. Segments là chỗ đốt hiệu năng dễ nhất.",
         blogPath: "/geometry-material/geometries",
-        breaks: [
-          "Bật wireframe — Plane chỉ có 2 triangles, TorusKnot có hàng nghìn.",
-          "Đổi `SphereGeometry(0.8, 32, 16)` thành `(0.8, 128, 64)` — tăng ~16 lần, mắt gần như không phân biệt được.",
-          "Tắt doubleSide ở triangle tự dựng — biến mất nửa vòng quay.",
-          "Tắt `position.needsUpdate` ở bài sóng — mặt phẳng đứng im dù mảng vẫn đang đổi.",
-          "Tắt `computeVertexNormals()` — sóng vẫn nhấp nhô nhưng sáng phẳng lì.",
-        ],
+        breaks: {
+          "bang-tra": [
+            "Bật wireframe — Plane chỉ có 2 triangles, TorusKnot có hàng nghìn.",
+            "Đổi `SphereGeometry(0.8, 32, 16)` thành `(0.8, 128, 64)` — tăng ~16 lần, mắt gần như không phân biệt được.",
+            "Đổi `IcosahedronGeometry(0.9, 0)` thành `(0.9, 3)` — tham số thứ hai là số lần chia nhỏ.",
+          ],
+          "tam-giac": [
+            "Bỏ `side: THREE.DoubleSide` — triangle biến mất nửa vòng quay, vì đang nhìn mặt sau.",
+            "Đảo hai vertices cuối trong mảng — mặt trước thành mặt sau.",
+            "Bỏ `computeVertexNormals()` — triangle đen thui, ánh sáng không biết chiếu vào đâu.",
+          ],
+          song: [
+            "Bỏ `position.needsUpdate = true` — mặt phẳng đứng im dù mảng vẫn đang đổi.",
+            "Bỏ `computeVertexNormals()` — sóng vẫn nhấp nhô nhưng sáng phẳng lì.",
+            "Đổi `64, 64` thành `256, 256` rồi nhìn FPS.",
+          ],
+        },
         load: () => import("./15-geometries"),
       },
       {

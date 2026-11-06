@@ -65,14 +65,21 @@ export type LessonStageProps = {
 export const LessonStage = ({ path }: LessonStageProps) => {
   const lesson = findLesson(path)?.lesson ?? null;
   const [demos, setDemos] = useState<DemoType[] | null>(null);
-  const [active, setActive] = useState(0);
+  // Nhớ theo `demo.id`, không theo index: save file -> HMR nạp lại registry ->
+  // `lesson` là object mới và effect dưới chạy lại, nhưng vẫn là bài cũ nên
+  // phải giữ nguyên demo đang mở. Chỉ quay về demo 1 khi đổi sang bài khác.
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const lastPath = useRef(path);
   // Bấm Reset -> tăng runId -> DemoCanvas đổi key, lab cũ dispose, setup chạy lại.
   const [runId, setRunId] = useState(0);
 
   useEffect(() => {
     setDemos(null);
-    setActive(0);
-    setRunId(0);
+    if (lastPath.current !== path) {
+      lastPath.current = path;
+      setActiveId(null);
+      setRunId(0);
+    }
 
     const load = lesson?.load;
     if (!load) return;
@@ -85,11 +92,14 @@ export const LessonStage = ({ path }: LessonStageProps) => {
     return () => {
       cancelled = true;
     };
-  }, [lesson]);
+  }, [lesson, path]);
 
   if (!lesson) return null;
 
-  const demo = demos?.[active];
+  const demo = demos?.find((item) => item.id === activeId) ?? demos?.[0];
+  const breaks = Array.isArray(lesson.breaks)
+    ? lesson.breaks
+    : demo && lesson.breaks?.[demo.id];
 
   // Nạp lại module bài để lấy bản code mới nhất (sau khi sửa file), rồi dựng
   // lại lab. Giữ nguyên demo đang chọn.
@@ -155,9 +165,9 @@ export const LessonStage = ({ path }: LessonStageProps) => {
               <Button
                 key={item.id}
                 size="sm"
-                variant={index === active ? "secondary" : "ghost"}
-                onClick={() => setActive(index)}
-                className={cn("h-7 text-xs", index === active && "font-medium")}
+                variant={item.id === demo?.id ? "secondary" : "ghost"}
+                onClick={() => setActiveId(item.id)}
+                className={cn("h-7 text-xs", item.id === demo?.id && "font-medium")}
               >
                 {index + 1}. {item.title}
               </Button>
@@ -195,7 +205,7 @@ export const LessonStage = ({ path }: LessonStageProps) => {
           </section>
         ) : null}
 
-        {lesson.breaks?.length ? (
+        {breaks?.length ? (
           <section className="px-6 py-6">
             <Separator className="mb-6" />
             <h2 className="flex items-center gap-2 text-sm font-medium">
@@ -203,7 +213,7 @@ export const LessonStage = ({ path }: LessonStageProps) => {
               Thử phá
             </h2>
             <ul className="mt-3 space-y-2">
-              {lesson.breaks.map((item) => (
+              {breaks.map((item) => (
                 <li
                   key={item}
                   className="flex gap-2.5 text-sm leading-relaxed text-foreground/60"
