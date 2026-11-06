@@ -4,7 +4,11 @@ Lab thực hành Three.js đi kèm series blog (xem `BLOG_BASE` trong
 `src/lessons/registry.ts`). Mỗi bài có một file stub ở `src/lessons/*.ts`
 (chứa `// TODO`, người học tự gõ) và một file đáp án tương ứng ở
 `src/solutions/*.ts`. `src/lessons/registry.ts` chỉ import từ `src/lessons/`
-— `src/solutions/` không được app dùng lúc chạy, nó chỉ để đối chiếu sau.
+— trang lab chạy stub, không dùng `src/solutions/`. Ngoại lệ duy nhất là route
+`/embed` (demo nhúng trong blog): nó tải đáp án qua
+`src/components/lesson/solutions.ts` để blog luôn hiện kết quả hoàn chỉnh.
+Thêm bài mới thì thêm một dòng vào map đó (chỉ đường dẫn import, không cần
+đọc nội dung đáp án).
 
 ## Không được đọc `src/solutions/**`
 

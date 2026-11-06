@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { DemoType } from "~/lab";
 import { findLesson } from "~/lessons/registry";
+import { solutionLoaders } from "./solutions";
 import { DemoCanvas } from "./stage";
 
 export type LessonEmbedProps = {
@@ -20,7 +21,9 @@ export const LessonEmbed = ({ path, demoId }: LessonEmbedProps) => {
   const [demo, setDemo] = useState<DemoType | null>(null);
 
   useEffect(() => {
-    const load = findLesson(path)?.lesson.load;
+    // Blog cần kết quả hoàn chỉnh -> ưu tiên đáp án; bài chưa có đáp án thì
+    // mới rơi về stub của lab.
+    const load = solutionLoaders[path] ?? findLesson(path)?.lesson.load;
     if (!load) return;
 
     let cancelled = false;

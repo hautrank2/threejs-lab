@@ -56,7 +56,7 @@ export const lesson: LessonModuleType = {
         gui.add(params, "removeRow").name("scene.remove(row)");
         gui.add(params, "addRow").name("scene.add(row)");
 
-        // đếm bằng traverse: cả cây, không chỉ con trực tiếp
+        // đếm bằng traverse: cả cây, không chỉ children trực tiếp
         lab.onTick(() => {
           let total = 0;
           scene.traverse(() => total++);

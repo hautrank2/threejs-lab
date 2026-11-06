@@ -68,7 +68,7 @@ export const lesson: LessonModuleType = {
             lab.readout(
               `FPS        ${Math.round(frames / acc)}\n` +
                 `draw call  ${renderer.info.render.calls}\n` +
-                `tam giác   ${renderer.info.render.triangles.toLocaleString("vi-VN")}\n` +
+                `triangles  ${renderer.info.render.triangles.toLocaleString("vi-VN")}\n` +
                 `pixel vẽ   ${((width * height * params.pixelRatio ** 2) / 1e6).toFixed(1)}M`,
             );
             frames = 0;

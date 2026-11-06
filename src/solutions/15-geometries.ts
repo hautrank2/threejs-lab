@@ -40,15 +40,15 @@ export const lesson: LessonModuleType = {
 
         lab.gui.add(material, "wireframe");
 
-        // đếm đỉnh và tam giác của từng loại
+        // đếm vertices và triangles của từng loại
         const lines = names.map((name) => {
           const geometry = geometries[name];
           const index = geometry.getIndex();
           const vertices = geometry.attributes.position.count;
           const triangles = (index ? index.count : vertices) / 3;
-          return `${name.padEnd(13)} ${String(vertices).padStart(5)} đỉnh  ${String(
+          return `${name.padEnd(13)} ${String(vertices).padStart(5)} vertices  ${String(
             triangles,
-          ).padStart(5)} tam giác`;
+          ).padStart(5)} triangles`;
         });
 
         lab.readout(lines.join("\n"));
@@ -56,7 +56,7 @@ export const lesson: LessonModuleType = {
     },
     {
       id: "tam-giac",
-      title: "Tự dựng một tam giác",
+      title: "Tự dựng một triangle",
       lab: { helpers: false },
       setup: (lab) => {
         const geometry = new THREE.BufferGeometry();
@@ -85,13 +85,13 @@ export const lesson: LessonModuleType = {
         });
 
         lab.readout(
-          "3 đỉnh, 1 tam giác.\nTắt doubleSide -> biến mất nửa vòng quay.",
+          "3 vertices, 1 triangle.\nTắt doubleSide -> biến mất nửa vòng quay.",
         );
       },
     },
     {
       id: "song",
-      title: "Sửa từng đỉnh lúc chạy",
+      title: "Sửa từng vertex lúc chạy",
       lab: { helpers: false },
       setup: (lab) => {
         const geometry = new THREE.PlaneGeometry(10, 10, 64, 64);
