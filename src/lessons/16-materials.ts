@@ -34,7 +34,9 @@ export const lesson: LessonModuleType = {
         // một mặt phẳng phía sau, để thấy rõ transparent và opacity
         const back = new THREE.Mesh(
           new THREE.PlaneGeometry(8, 8),
-          new THREE.MeshStandardMaterial({ color: 0x1e293b }),
+          new THREE.MeshStandardMaterial({
+            color: 0x1e293b,
+          }),
         );
         back.position.z = -2;
         scene.add(back);
